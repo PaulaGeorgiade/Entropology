@@ -8,7 +8,7 @@ from matplotlib.offsetbox import AnchoredText
 from diversity_calculators import calc_diversity , calc_gamma_diversity , calc_alpha_diversity , calc_beta_diversity
 plt.rcParams.update({'font.size': 30, "font.family":"helvetica"})
     
-def read_df (exclude_periods = ["LM", "LM III", "LM III A", "LM III B"], dbname = "STANDARD_DATES_SettlementTomb_new2022",pcol = "New Merged Dates", map_periods = False):
+def read_df (exclude_periods = ["LM", "LM III", "LM III A", "LM III B"], dbname = "Entropology_Dataset_Flattened",pcol = "Solo_Period", map_periods = False):
     """
     This function loads the data file and plots a histogram of abundance of species
     """
@@ -18,55 +18,15 @@ def read_df (exclude_periods = ["LM", "LM III", "LM III A", "LM III B"], dbname 
     print("using ", dbname, pcol )
     db = pd.read_excel(f"{dbname}.xlsx")[["Deposition_Site","Vessel_Form", pcol]]
     for p in exclude_periods: 
-        db = db[db.Solo_Period != p]
-    print("set of periods", set(db.Solo_Period))
+        db = db[db[pcol] != p]
+    print("set of periods", set(db[pcol]))
     if map_periods :
         print("mapping periods")
-        db["Solo_Period"]= db["Solo_Period"].map(period_map)
+        db[pcol]= db[pcol].map(period_map)
     db = db[db.Vessel_Form!= "Unknown"]
     db =db.dropna()
     print("length of database:" ,len(db) )
-    h={}
-    for key,val in db.groupby("Vessel_Form"):
-        h[key] = len(val)
-    h = {k:v for k,v in sorted(h.items(), key = lambda item: item[1], reverse =True)}
-    
-    ###############
-    # FIGURE 2 MAIN TEXT
-    ###############
-    h_site_tot = {}
-    for site, group in db.groupby("Deposition_Site"):
-        h_site_tot[site] = len(group)
-    color= {"Chania":"tab:blue","Knossos":"tab:orange","Kommos":"tab:green","Mochlos":"tab:red", "Palaikastro":"tab:purple"}
-    h={}
-    for key,val in db.groupby("Vessel_Form"):
-        h[key] = len(val)
-    h = {k:v for k,v in sorted(h.items(), key = lambda item: item[1], reverse =True)}
-    h_site={}
-    for site in set(db.Deposition_Site):
-
-        arr = []
-        for key in h.keys():
-            arr.append(len(db[(db.Vessel_Form == key) & (db.Deposition_Site == site)]))
-            h_site[site] = arr
-    fig,ax = plt.subplots(1,1,figsize=(22,10))
-    from mpl_toolkits.axes_grid1.inset_locator import inset_axes
-    axi = inset_axes(ax, width = 4, height = 3)
-    bottom_values = [0 for i in range(49)]
-    for site in ["Mochlos", "Palaikastro", "Knossos", "Kommos", "Chania" ]:
-        ax.bar(list(h.keys()), h_site[site],bottom = bottom_values,width=0.4, alpha = 1, label = site, color = color[site])
-        bottom_values =np.add(bottom_values,  h_site[site])
-    for site in ["Chania", "Kommos", "Knossos", "Palaikastro", "Mochlos" ]:
-        axi.bar(site, h_site_tot[site], color = color[site])
-    plt.xticks(rotation=90)
-    ax.tick_params(axis = "y", length = 10, width=2  , which = "both")
-    ax.tick_params(axis='x', labelrotation = 90)
-    ax.set_yscale('log')
-    ax.set_yticks([ 1, 10, 100, 1000])
-    ax.set_ylim(0.5,3000)
-    ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
-    plt.tight_layout()
-    plt.savefig(f"./figures/{dbname}/{pcol}/Fig2.eps")
+    return db
 
     
     
@@ -89,7 +49,6 @@ def read_df (exclude_periods = ["LM", "LM III", "LM III A", "LM III B"], dbname 
     # plt.savefig(f"./figures/{dbname}/{pcol}/period_size.pdf")
     # plt.show()
     
-    return db
 
 def run_beta(db, dbname, pcol):
     """
@@ -98,8 +57,8 @@ def run_beta(db, dbname, pcol):
     for q in [0.5,1,2]:
         D_beta_land = {}
         D_beta_eff= {}
-        for p in sorted(set(db.Solo_Period)):
-            samples = [list(group["Vessel_Form"]) for site,group in db[db.Solo_Period ==p].groupby("Deposition_Site")]
+        for p in sorted(set(db[pcol])):
+            samples = [list(group["Vessel_Form"]) for site,group in db[db[pcol] ==p].groupby("Deposition_Site")]
             D_beta_land[p]=calc_beta_diversity(samples, q,False)
             D_beta_eff[p]=calc_beta_diversity(samples, q,True)
         fig,ax = plt.subplots(1,1,figsize=(12,10))
@@ -119,9 +78,9 @@ def run_alpha(db, dbname, pcol):
     for q in [0.5,1,2]:
         D_alpha_land = {}
         D_alpha_eff= {}
-        for p in sorted(set(db.Solo_Period)):
+        for p in sorted(set(db[pcol])):
             print(p)
-            samples = [list(group["Vessel_Form"]) for site,group in db[db.Solo_Period ==p].groupby("Deposition_Site")]
+            samples = [list(group["Vessel_Form"]) for site,group in db[db[pcol] ==p].groupby("Deposition_Site")]
             D_alpha_land[p]=calc_alpha_diversity(samples, q,False)
             D_alpha_eff[p]=calc_alpha_diversity(samples, q,True)
         fig,ax = plt.subplots(1,1,figsize=(12,10))    
@@ -134,19 +93,19 @@ def run_alpha(db, dbname, pcol):
         plt.tight_layout()
         plt.savefig(f"./figures/{dbname}/{pcol}/alpha_diversity_landscape_and_effective_q_{q}.pdf")
     
-def run_gamma(db , q = 1,dbname = "NoEarlyDates_WorkingDB_Modelled" ,pcol = "Solo_Period", figname= "Fig3.pdf"):
+def run_gamma(db , q = 1,dbname = "Entropology_Dataset_Flattened" ,pcol = "Solo_Period", figname= "Fig3.pdf"):
     """
     Plotting function to visualise Gamma diversity
     """
     fig,ax = plt.subplots(1,1,figsize=(14,9))
     D={}
-    for p in sorted(set(db.Solo_Period)):
-        samples = [list(group["Vessel_Form"]) for site,group in db[db.Solo_Period ==p].groupby("Deposition_Site")]
+    for p in sorted(set(db[pcol])):
+        samples = [list(group["Vessel_Form"]) for site,group in db[db[pcol] ==p].groupby("Deposition_Site")]
         D[p]=calc_gamma_diversity(samples, q,True)     
     ax.plot(D.keys(),D.values(),marker ="o",markersize= 20, label = "Effective", linestyle= "-", linewidth=3,color= "royalblue")
     D={}
-    for p in sorted(set(db.Solo_Period)):
-        samples = [list(group["Vessel_Form"]) for site,group in db[db.Solo_Period ==p].groupby("Deposition_Site")]
+    for p in sorted(set(db[pcol])):
+        samples = [list(group["Vessel_Form"]) for site,group in db[db[pcol] ==p].groupby("Deposition_Site")]
         D[p]=calc_gamma_diversity(samples, q,False)
     ax.plot(D.keys(),D.values(),marker ="^",markersize= 20, label = "Landscape", linestyle = "--", linewidth=3,color= "crimson")
     ax.set_xticks([0, 1, 2, 3, 4], list(D.keys()), rotation=0)
@@ -180,7 +139,7 @@ def random_replacement(db, sample, percentage, uniform = False):
     sample_copy += random.sample(all_artefacts,num_to_replace)
     return sample_copy
     
-def run_gamma_error(db,percentage=0.1,dbname=None, pcol=None,figname = None):
+def run_gamma_error(db,percentage=0.1,dbname=None, pcol=None,figname = None, ylimit = 45):
     """
     Plotting function to visualise Gamma diversity with errorbars
     """
@@ -199,8 +158,8 @@ def run_gamma_error(db,percentage=0.1,dbname=None, pcol=None,figname = None):
         colran = {2:"red",1: "lightgreen",0.5:"deepskyblue", 0:"violet"}
         for q in [0,0.5,1,2]:
             D=defaultdict(list)
-            for p in sorted(set(db.Solo_Period)):
-                samples = [list(g["Vessel_Form"]) for v,g in db[db.Solo_Period==p].groupby("Deposition_Site")]
+            for p in sorted(set(db[pcol])):
+                samples = [list(g["Vessel_Form"]) for v,g in db[db[pcol]==p].groupby("Deposition_Site")]
                 for r in range(100):
                     samples_shuffled = []
                     for sample in samples:
@@ -215,7 +174,7 @@ def run_gamma_error(db,percentage=0.1,dbname=None, pcol=None,figname = None):
                 ax.errorbar(D.keys(),[np.mean(x[:-1]) for x in list(D.values())],[np.std(x[:-1]) for x in list(D.values())],marker ="^",markersize= 20,capsize=5,linestyle ="--", color=colran[q])
         i+=1
         ax.set_ylabel("$D^{\\gamma}_q$",fontsize=40)
-        ax.set_ylim(0,45)
+        ax.set_ylim(0,ylimit)
     fig.legend(loc='upper center',fancybox=False,bbox_to_anchor=(0.5, 0), shadow=False,ncol=4)
     plt.tight_layout()
     plt.savefig(f"./figures/{dbname}/{pcol}/{figname}", bbox_inches = "tight")
@@ -236,7 +195,7 @@ def run_site_error(db,q,dbname, pcol,percentage=0.1,plot_zeros=False):
         yerr = []
         y_true=[]
         for date in ["LM II", "LM III A1","LM III A2","LM III B1","LM III B2"]:
-            X = df[df.Solo_Period==date]
+            X = df[df[pcol]==date]
             ytemp=[]
             sample =list(X.Vessel_Form)
             if len(sample)>min_val:
