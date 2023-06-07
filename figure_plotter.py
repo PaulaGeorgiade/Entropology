@@ -14,15 +14,58 @@ if __name__ == "__main__":
     ##############
     # Load database & plot (FIGURE 2 MAIN TEXT)
     ##############
-    dbname = "NoEarlyDates_WorkingDB_Modelled" 
+    dbname = "Entropology_Dataset_Flattened" 
     pcol = "Solo_Period"
-    db = read_df(exclude_periods = ["LM", "LM III", "LM III A", "LM III B"], dbname = dbname, pcol = pcol, map_periods = True)
+    map_periods = False
+    # dbname= "Entropology_Dataset_Flattened"
+    # pcol = "Solo_Period"
+    # map_periods = True
+    db = read_df(exclude_periods = ["LM", "LM III", "LM III A", "LM III B"], dbname = dbname, pcol = pcol, map_periods = map_periods)
+    
+    
+    
+    ###############
+    # FIGURE 2 MAIN TEXT
+    ###############
+    h_site_tot = {}
+    for site, group in db.groupby("Deposition_Site"):
+        h_site_tot[site] = len(group)
+    color= {"Chania":"tab:blue","Knossos":"tab:orange","Kommos":"tab:green","Mochlos":"tab:red", "Palaikastro":"tab:purple"}
+    h={}
+    for key,val in db.groupby("Vessel_Form"):
+        h[key] = len(val)
+    h = {k:v for k,v in sorted(h.items(), key = lambda item: item[1], reverse =True)}
+    h_site={}
+    for site in set(db.Deposition_Site):
+        arr = []
+        for key in h.keys():
+            arr.append(len(db[(db.Vessel_Form == key) & (db.Deposition_Site == site)]))
+            h_site[site] = arr
+    fig,ax = plt.subplots(1,1,figsize=(22,10))
+    from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+    axi = inset_axes(ax, width = 4, height = 3)
+    bottom_values = [0 for i in range(len(set(db.Vessel_Form)))]
+    for site in ["Mochlos", "Palaikastro", "Knossos", "Kommos", "Chania" ]:
+        ax.bar(list(h.keys()), h_site[site],bottom = bottom_values,width=0.4, alpha = 1, label = site, color = color[site])
+        bottom_values =np.add(bottom_values,  h_site[site])
+    for site in ["Chania", "Kommos", "Knossos", "Palaikastro", "Mochlos" ]:
+        axi.bar(site, h_site_tot[site], color = color[site])
+    plt.xticks(rotation=90)
+    ax.tick_params(axis = "y", length = 10, width=2  , which = "both")
+    ax.tick_params(axis='x', labelrotation = 90)
+    ax.set_yscale('log')
+    ax.set_yticks([ 1, 10, 100, 1000])
+    ax.set_ylim(0.5,3000)
+    ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    plt.tight_layout()
+    plt.savefig(f"./figures/{dbname}/{pcol}/Fig2.eps")
+
     
     
     ##############
     # Gamma diversity with errorbars (FIGURE 5, FIGURE 3(b) MAIN TEXT) 
     ##############
-    run_gamma_error(db,0.1,dbname =dbname, pcol= pcol, figname= "Fig5.eps") # 
+    run_gamma_error(db,0.1,dbname =dbname, pcol= pcol, figname= "Fig5.eps", ylimit = 60) # 
     run_gamma(db,dbname =dbname, pcol= pcol,figname= "Fig3.eps")
     
     sites =sorted(list(set(db.Deposition_Site)))
@@ -33,7 +76,7 @@ if __name__ == "__main__":
     ##############
     D={}
     eff = False
-    for p in sorted(set(db.Solo_Period)):
+    for p in sorted(set(db[pcol])):
         samples = []
         for s in sites:
             samples.append(list(db[(db[pcol] ==p) & (db.Deposition_Site==s)]["Vessel_Form"]))
@@ -119,11 +162,11 @@ if __name__ == "__main__":
         ax[i].spines['right'].set_visible(False)
         ax[i].spines['bottom'].set_visible(False)
         ax[i].spines['left'].set_visible(False)
-        ax[i].set_ylim(-1.35,1.35)
-        ax[i].set_xlim(-1.35,1.35)
+        ax[i].set_ylim(-1.4,1.4)
+        ax[i].set_xlim(-1.4,1.4)
         i +=1
     plt.tight_layout()
-    plt.savefig(f"inter_period_similarity.svg")
+    plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.svg")
     plt.show()
             
             
