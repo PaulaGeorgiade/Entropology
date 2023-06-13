@@ -14,12 +14,12 @@ if __name__ == "__main__":
     ##############
     # Load database & plot (FIGURE 2 MAIN TEXT)
     ##############
-    dbname = "Entropology_Dataset_Flattened" 
+    # dbname = "STANDARD_DATES_SettlementTomb_new2022" 
+    # pcol = "New Merged Dates"
+    # map_periods = False
+    dbname= "NoEarlyDates_WorkingDB_Modelled"
     pcol = "Solo_Period"
-    map_periods = False
-    # dbname= "Entropology_Dataset_Flattened"
-    # pcol = "Solo_Period"
-    # map_periods = True
+    map_periods = True
     db = read_df(exclude_periods = ["LM", "LM III", "LM III A", "LM III B"], dbname = dbname, pcol = pcol, map_periods = map_periods)
     
     
@@ -59,14 +59,16 @@ if __name__ == "__main__":
     ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
     plt.tight_layout()
     plt.savefig(f"./figures/{dbname}/{pcol}/Fig2.eps")
+    plt.savefig(f"./figures/{dbname}/{pcol}/Fig2.pdf")
+    plt.savefig(f"./figures/{dbname}/{pcol}/Fig2.svg")
 
     
     
     ##############
     # Gamma diversity with errorbars (FIGURE 5, FIGURE 3(b) MAIN TEXT) 
     ##############
-    run_gamma_error(db,0.1,dbname =dbname, pcol= pcol, figname= "Fig5.eps", ylimit = 60) # 
-    run_gamma(db,dbname =dbname, pcol= pcol,figname= "Fig3.eps")
+    run_gamma_error(db,0.1,dbname =dbname, pcol= pcol, figname= "Fig5", ylimit = 45) # 
+    run_gamma(db,dbname =dbname, pcol= pcol,figname= "Fig3")
     
     sites =sorted(list(set(db.Deposition_Site)))
     periods= sorted(list(set(db[pcol])))
@@ -90,6 +92,7 @@ if __name__ == "__main__":
             s2+=s
     eff = True # if use effective or landscape aggregation 
     intra_period_similarity = {}
+    graph_list = []
     for i in range(len(periods)-1):
         p1,p2 = periods[i], periods[i+1]
         print(p1,p2,end=" ")
@@ -106,36 +109,45 @@ if __name__ == "__main__":
                     else:
                         res.append(0)
             print(round(np.mean(res),2)," ",round(np.std(res),2),  end=",")
-            
+            graph_list.append([q, p1, p2, np.mean(res)])
+        print('')
     ###################
     # Table replacement
     ###################
-    graph_list =[[0, 'LM II', 'LM III A1', 0.36850323937820184],
-     [0.5, 'LM II', 'LM III A1', 0.5169973358901473],
-     [1, 'LM II', 'LM III A1', 0.6350543067014085],
-     [2, 'LM II', 'LM III A1', 0.724621225495097],
-     [0, 'LM III A1', 'LM III A2', 0.45574130461363005],
-     [0.5, 'LM III A1', 'LM III A2', 0.5829699755694543],
-     [1, 'LM III A1', 'LM III A2', 0.6728201724055703],
-     [2, 'LM III A1', 'LM III A2', 0.7267556766980137],
-     [0, 'LM III A2', 'LM III B1', 0.2159211219447572],
-     [0.5, 'LM III A2', 'LM III B1', 0.3182786126849091],
-     [1, 'LM III A2', 'LM III B1', 0.41304593443751564],
-     [2, 'LM III A2', 'LM III B1', 0.45089638901740403],
-     [0, 'LM III B1', 'LM III B2', 0.059867024587612824],
-     [0.5, 'LM III B1', 'LM III B2', 0.09993757112406364],
-     [1, 'LM III B1', 'LM III B2', 0.13627016466505842],
-     [2, 'LM III B1', 'LM III B2', 0.14712327905128134]]
+    # graph_list =[[0, 'LM II', 'LM III A1', 0.36850323937820184],
+    #  [0.5, 'LM II', 'LM III A1', 0.5169973358901473],
+    #  [1, 'LM II', 'LM III A1', 0.6350543067014085],
+    #  [2, 'LM II', 'LM III A1', 0.724621225495097],
+    #  [0, 'LM III A1', 'LM III A2', 0.45574130461363005],
+    #  [0.5, 'LM III A1', 'LM III A2', 0.5829699755694543],
+    #  [1, 'LM III A1', 'LM III A2', 0.6728201724055703],
+    #  [2, 'LM III A1', 'LM III A2', 0.7267556766980137],
+    #  [0, 'LM III A2', 'LM III B1', 0.2159211219447572],
+    #  [0.5, 'LM III A2', 'LM III B1', 0.3182786126849091],
+    #  [1, 'LM III A2', 'LM III B1', 0.41304593443751564],
+    #  [2, 'LM III A2', 'LM III B1', 0.45089638901740403],
+    #  [0, 'LM III B1', 'LM III B2', 0.059867024587612824],
+    #  [0.5, 'LM III B1', 'LM III B2', 0.09993757112406364],
+    #  [1, 'LM III B1', 'LM III B2', 0.13627016466505842],
+    #  [2, 'LM III B1', 'LM III B2', 0.14712327905128134]]
 
 
-    vnames = ['LM II' , 'LM III A1' , 'LM III A2', 'LM III B1', 'LM III B2']
+    vnames = list(set(db[pcol]))#['LM II' , 'LM III A1' , 'LM III A2', 'LM III B1', 'LM III B2']
     q_color = {0: "tab:blue", 0.5: "tab:orange", 1: "tab:purple", 2:"tab:red" }
     options = {"edgecolors": "tab:gray", "node_size": 800, "alpha": 1}
-    pos = {'LM II':  np.array([-1,-1]) , 
-     'LM III A1': np.array([-0.5,-0.5]) , 
-     'LM III A2': np.array([0, 0]),
-     'LM III B1': np.array([0.5, 0.5]),
-     'LM III B2': np.array([1,1])}
+    
+    if dbname == "STANDARD_DATES_SettlementTomb_new2022" :
+        pos = {'LM II':  np.array([-1,-1]) , 
+         'LM IIIA': np.array([-1/3,-1/3]) , 
+         'LM IIIB': np.array([1/3, 1/3]),
+         'LM IIIC': np.array([1,1])}
+        
+    elif dbname == "NoEarlyDates_WorkingDB_Modelled":
+        pos = {'LM II':  np.array([-1,-1]) , 
+         'LM III A1': np.array([-0.5,-0.5]) , 
+         'LM III A2': np.array([0, 0]),
+         'LM III B1': np.array([0.5, 0.5]),
+         'LM III B2': np.array([1,1])}
 
     fig,ax = plt.subplots(1,4,figsize =(19,5))
     i = 0
@@ -167,6 +179,8 @@ if __name__ == "__main__":
         i +=1
     plt.tight_layout()
     plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.svg")
+    plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.pdf")
+    plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.eps")
     plt.show()
             
             
@@ -200,6 +214,8 @@ if __name__ == "__main__":
     ax.legend(loc='center left',fancybox=False,bbox_to_anchor=(1, 0.5), shadow=False,ncol=1)
     plt.tight_layout()
     plt.savefig(f"./figures/{dbname}/{pcol}/Fig4.eps")
+    plt.savefig(f"./figures/{dbname}/{pcol}/Fig4.pdf")
+    plt.savefig(f"./figures/{dbname}/{pcol}/Fig4.svg")
     plt.show()
      
     
@@ -266,6 +282,8 @@ if __name__ == "__main__":
         fig.legend(loc='upper center',fancybox=False,bbox_to_anchor=(0.5,0), shadow=False,ncol=5,title = "A")
         plt.tight_layout()
         plt.savefig(f"./figures/{dbname}/{pcol}/Fig6.eps", bbox_inches = "tight")
+        plt.savefig(f"./figures/{dbname}/{pcol}/Fig6.pdf", bbox_inches = "tight")
+        plt.savefig(f"./figures/{dbname}/{pcol}/Fig6.svg", bbox_inches = "tight")
         
 
     ###################

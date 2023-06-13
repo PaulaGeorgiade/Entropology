@@ -8,7 +8,7 @@ from matplotlib.offsetbox import AnchoredText
 from diversity_calculators import calc_diversity , calc_gamma_diversity , calc_alpha_diversity , calc_beta_diversity
 plt.rcParams.update({'font.size': 30, "font.family":"helvetica"})
     
-def read_df (exclude_periods = ["LM", "LM III", "LM III A", "LM III B"], dbname = "Entropology_Dataset_Flattened",pcol = "Solo_Period", map_periods = False):
+def read_df (exclude_periods = ["LM", "LM III", "LM III A", "LM III B"], dbname = "STANDARD_DATES_SettlementTomb_new2022",pcol = "New Merged Dates", map_periods = False):
     """
     This function loads the data file and plots a histogram of abundance of species
     """
@@ -70,6 +70,8 @@ def run_beta(db, dbname, pcol):
         plt.legend(loc=1)
         plt.tight_layout()
         plt.savefig(f"./figures/{dbname}/{pcol}/beta_diversity_landscape_and_effective_q_{q}.pdf")
+        plt.savefig(f"./figures/{dbname}/{pcol}/beta_diversity_landscape_and_effective_q_{q}.svg")
+        plt.savefig(f"./figures/{dbname}/{pcol}/beta_diversity_landscape_and_effective_q_{q}.eps")
     
 def run_alpha(db, dbname, pcol):
     """
@@ -92,8 +94,10 @@ def run_alpha(db, dbname, pcol):
         plt.legend(loc=3)
         plt.tight_layout()
         plt.savefig(f"./figures/{dbname}/{pcol}/alpha_diversity_landscape_and_effective_q_{q}.pdf")
+        plt.savefig(f"./figures/{dbname}/{pcol}/alpha_diversity_landscape_and_effective_q_{q}.svg")
+        plt.savefig(f"./figures/{dbname}/{pcol}/alpha_diversity_landscape_and_effective_q_{q}.eps")
     
-def run_gamma(db , q = 1,dbname = "Entropology_Dataset_Flattened" ,pcol = "Solo_Period", figname= "Fig3.pdf"):
+def run_gamma(db , q = 1,dbname = "NoEarlyDates_WorkingDB_Modelled" ,pcol = "Solo_Period", figname= "Fig3"):
     """
     Plotting function to visualise Gamma diversity
     """
@@ -108,7 +112,7 @@ def run_gamma(db , q = 1,dbname = "Entropology_Dataset_Flattened" ,pcol = "Solo_
         samples = [list(group["Vessel_Form"]) for site,group in db[db[pcol] ==p].groupby("Deposition_Site")]
         D[p]=calc_gamma_diversity(samples, q,False)
     ax.plot(D.keys(),D.values(),marker ="^",markersize= 20, label = "Landscape", linestyle = "--", linewidth=3,color= "crimson")
-    ax.set_xticks([0, 1, 2, 3, 4], list(D.keys()), rotation=0)
+    ax.set_xticks(list(range(len(set(db[pcol])))), list(D.keys()), rotation=0)
     ax.tick_params(axis = "both", length = 10, width=2  , which = "both")
     ax = plt.gca()
     ax.grid(which='major', axis='y', linestyle='-' ,lw =2)
@@ -118,7 +122,9 @@ def run_gamma(db , q = 1,dbname = "Entropology_Dataset_Flattened" ,pcol = "Solo_
     plt.legend(loc=1)
     ax.spines['right'].set_visible(False)
     plt.tight_layout()
-    plt.savefig(f"./figures/{dbname}/{pcol}/{figname}")
+    plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.pdf")
+    plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.svg")
+    plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.eps")
         
 def random_replacement(db, sample, percentage, uniform = False):
     """
@@ -177,7 +183,9 @@ def run_gamma_error(db,percentage=0.1,dbname=None, pcol=None,figname = None, yli
         ax.set_ylim(0,ylimit)
     fig.legend(loc='upper center',fancybox=False,bbox_to_anchor=(0.5, 0), shadow=False,ncol=4)
     plt.tight_layout()
-    plt.savefig(f"./figures/{dbname}/{pcol}/{figname}", bbox_inches = "tight")
+    plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.pdf", bbox_inches = "tight")
+    plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.svg", bbox_inches = "tight")
+    plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.eps", bbox_inches = "tight")
 
 def run_site_error(db,q,dbname, pcol,percentage=0.1,plot_zeros=False):
     """
@@ -224,7 +232,11 @@ def run_site_error(db,q,dbname, pcol,percentage=0.1,plot_zeros=False):
         plt.tight_layout()
         if plot_zeros==True:
             plt.savefig(f"./figures/{dbname}/{pcol}/site_diversity_q_{q}_{site}_shuffled_percentage_{percentage}.pdf")
+            plt.savefig(f"./figures/{dbname}/{pcol}/site_diversity_q_{q}_{site}_shuffled_percentage_{percentage}.eps")
+            plt.savefig(f"./figures/{dbname}/{pcol}/site_diversity_q_{q}_{site}_shuffled_percentage_{percentage}.svg")
         else:
             plt.savefig(f"./figures/{dbname}/{pcol}/site_diversity_q_{q}_{site}_shuffled_percentage_{percentage}_nozeros.pdf")
+            plt.savefig(f"./figures/{dbname}/{pcol}/site_diversity_q_{q}_{site}_shuffled_percentage_{percentage}_nozeros.svg")
+            plt.savefig(f"./figures/{dbname}/{pcol}/site_diversity_q_{q}_{site}_shuffled_percentage_{percentage}_nozeros.eps")
         plt.show()
         
