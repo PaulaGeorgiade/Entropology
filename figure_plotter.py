@@ -17,7 +17,7 @@ if __name__ == "__main__":
     # dbname = "STANDARD_DATES_SettlementTomb_new2022" 
     # pcol = "New Merged Dates"
     # map_periods = False
-    dbname= "NoEarlyDates_WorkingDB_Modelled"
+    dbname= "Entropology_Dataset_Flattened"
     pcol = "Solo_Period"
     map_periods = True
     db = read_df(exclude_periods = ["LM", "LM III", "LM III A", "LM III B"], dbname = dbname, pcol = pcol, map_periods = map_periods)
