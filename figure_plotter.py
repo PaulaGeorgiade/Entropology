@@ -275,10 +275,10 @@ if __name__ == "__main__":
         markers = ["o","^","*","s","v"]
         for key,val in site_sim_in_period.items():
             if i ==0:
-                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=30,label=key ,markerfacecolor = "white")
+                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=30,label=key ,markerfacecolor = "white", markeredgewidth =3)
                 
             else:
-                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=30,markerfacecolor = "white")
+                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=30,markerfacecolor = "white",markeredgewidth =3)
         ax[i].set_ylim(-0.1,1)
         if q==1:
             ax[i].set_ylabel("$\\langle S_1(A,B)\\rangle_B$", fontsize = 35)
