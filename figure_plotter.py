@@ -65,6 +65,7 @@ if __name__ == "__main__":
     plt.savefig(f"./figures/{dbname}/{pcol}/Fig2.eps")
     plt.savefig(f"./figures/{dbname}/{pcol}/Fig2.pdf")
     plt.savefig(f"./figures/{dbname}/{pcol}/Fig2.svg")
+    plt.savefig(f"./figures/{dbname}/{pcol}/Fig2.png")
 
     
     
@@ -185,6 +186,7 @@ if __name__ == "__main__":
     plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.svg")
     plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.pdf")
     plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.eps")
+    plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.png")
     plt.show()
             
             
@@ -220,6 +222,7 @@ if __name__ == "__main__":
     plt.savefig(f"./figures/{dbname}/{pcol}/Fig4.eps")
     plt.savefig(f"./figures/{dbname}/{pcol}/Fig4.pdf")
     plt.savefig(f"./figures/{dbname}/{pcol}/Fig4.svg")
+    plt.savefig(f"./figures/{dbname}/{pcol}/Fig4.png")
     plt.show()
      
     
@@ -272,10 +275,10 @@ if __name__ == "__main__":
         markers = ["o","^","*","s","v"]
         for key,val in site_sim_in_period.items():
             if i ==0:
-                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=20,label=key)
+                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=30,label=key ,markerfacecolor = "white")
                 
             else:
-                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=20)
+                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=30,markerfacecolor = "white")
         ax[i].set_ylim(-0.1,1)
         if q==1:
             ax[i].set_ylabel("$\\langle S_1(A,B)\\rangle_B$", fontsize = 35)
@@ -288,6 +291,7 @@ if __name__ == "__main__":
         plt.savefig(f"./figures/{dbname}/{pcol}/Fig6.eps", bbox_inches = "tight")
         plt.savefig(f"./figures/{dbname}/{pcol}/Fig6.pdf", bbox_inches = "tight")
         plt.savefig(f"./figures/{dbname}/{pcol}/Fig6.svg", bbox_inches = "tight")
+        plt.savefig(f"./figures/{dbname}/{pcol}/Fig6.png", bbox_inches = "tight")
         
 
     ###################

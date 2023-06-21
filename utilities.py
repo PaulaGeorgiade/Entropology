@@ -125,6 +125,7 @@ def run_gamma(db , q = 1,dbname = "NoEarlyDates_WorkingDB_Modelled" ,pcol = "Sol
     plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.pdf")
     plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.svg")
     plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.eps")
+    plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.png")
         
 def random_replacement(db, sample, percentage, uniform = False):
     """
@@ -192,6 +193,7 @@ def run_gamma_error(db,percentage=0.1,dbname=None, pcol=None,figname = None, yli
     plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.pdf", bbox_inches = "tight")
     plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.svg", bbox_inches = "tight")
     plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.eps", bbox_inches = "tight")
+    plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.png", bbox_inches = "tight")
 
 def run_site_error(db,q,dbname, pcol,percentage=0.1,plot_zeros=False):
     """
@@ -240,9 +242,11 @@ def run_site_error(db,q,dbname, pcol,percentage=0.1,plot_zeros=False):
             plt.savefig(f"./figures/{dbname}/{pcol}/site_diversity_q_{q}_{site}_shuffled_percentage_{percentage}.pdf")
             plt.savefig(f"./figures/{dbname}/{pcol}/site_diversity_q_{q}_{site}_shuffled_percentage_{percentage}.eps")
             plt.savefig(f"./figures/{dbname}/{pcol}/site_diversity_q_{q}_{site}_shuffled_percentage_{percentage}.svg")
+            plt.savefig(f"./figures/{dbname}/{pcol}/site_diversity_q_{q}_{site}_shuffled_percentage_{percentage}.png")
         else:
             plt.savefig(f"./figures/{dbname}/{pcol}/site_diversity_q_{q}_{site}_shuffled_percentage_{percentage}_nozeros.pdf")
             plt.savefig(f"./figures/{dbname}/{pcol}/site_diversity_q_{q}_{site}_shuffled_percentage_{percentage}_nozeros.svg")
             plt.savefig(f"./figures/{dbname}/{pcol}/site_diversity_q_{q}_{site}_shuffled_percentage_{percentage}_nozeros.eps")
+            plt.savefig(f"./figures/{dbname}/{pcol}/site_diversity_q_{q}_{site}_shuffled_percentage_{percentage}_nozeros.png")
         plt.show()
         
