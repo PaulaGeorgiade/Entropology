@@ -32,6 +32,7 @@ if __name__ == "__main__":
         h_site_tot[site] = len(group)
     color= {"Chania":"tab:blue","Knossos":"tab:orange","Kommos":"tab:green","Mochlos":"tab:red", "Palaikastro":"tab:purple"}
     h={}
+    hatch_styles = {"Chania": "/","Kommos": "X", "Knossos": "+", "Mochlos": "\\", "Palaikastro": "."}
     for key,val in db.groupby("Vessel_Form"):
         h[key] = len(val)
     h = {k:v for k,v in sorted(h.items(), key = lambda item: item[1], reverse =True)}
@@ -46,14 +47,17 @@ if __name__ == "__main__":
     axi = inset_axes(ax, width = 4, height = 3)
     bottom_values = [0 for i in range(len(set(db.Vessel_Form)))]
     for site in ["Mochlos", "Palaikastro", "Knossos", "Kommos", "Chania" ]:
-        ax.bar(list(h.keys()), h_site[site],bottom = bottom_values,width=0.4, alpha = 1, label = site, color = color[site])
+        ax.bar(list(h.keys()), h_site[site],bottom = bottom_values,width=0.7, 
+               alpha = 1, label = site, color = color[site],hatch = hatch_styles[site] +hatch_styles[site])
         bottom_values =np.add(bottom_values,  h_site[site])
     for site in ["Chania", "Kommos", "Knossos", "Palaikastro", "Mochlos" ]:
-        axi.bar(site, h_site_tot[site], color = color[site])
+        axi.bar(site, h_site_tot[site], color = color[site], hatch = hatch_styles[site])
     plt.xticks(rotation=90)
     ax.tick_params(axis = "y", length = 10, width=2  , which = "both")
     ax.tick_params(axis='x', labelrotation = 90)
     ax.set_yscale('log')
+    axi.set_yscale("log")
+    axi.set_yticks([  100, 1000, 10000])
     ax.set_yticks([ 1, 10, 100, 1000])
     ax.set_ylim(0.5,3000)
     ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
@@ -142,7 +146,7 @@ if __name__ == "__main__":
          'LM IIIB': np.array([1/3, 1/3]),
          'LM IIIC': np.array([1,1])}
         
-    elif dbname == "NoEarlyDates_WorkingDB_Modelled":
+    else: # dbname == "NoEarlyDates_WorkingDB_Modelled":
         pos = {'LM II':  np.array([-1,-1]) , 
          'LM III A1': np.array([-0.5,-0.5]) , 
          'LM III A2': np.array([0, 0]),

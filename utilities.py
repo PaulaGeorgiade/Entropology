@@ -160,8 +160,10 @@ def run_gamma_error(db,percentage=0.1,dbname=None, pcol=None,figname = None, yli
             at = AnchoredText(
                 "(b)", prop=dict(size=35), frameon=False, loc='upper left')
             ax.add_artist(at)
-        cols = {2:"firebrick",1: "darkgreen",0.5:"navy",0: "blueviolet"}
-        colran = {2:"red",1: "lightgreen",0.5:"deepskyblue", 0:"violet"}
+        cols = {2:"#a62802",1: "#46a303",0.5:"#0266a1",0: "#b88702"}
+        colran = {2:"#f73a00",1: "#5ede02", 0.5: "#03a1fc", 0:"#f5b402"}
+        shapes = { 2: "s", 1: "^", 0.5: "o", 0: "D" }
+        # linestyles = {2:"solid" , 1:"dotted" , 0.5: "dashed" , 0: "dashdot"}
         for q in [0,0.5,1,2]:
             D=defaultdict(list)
             for p in sorted(set(db[pcol])):
@@ -173,11 +175,15 @@ def run_gamma_error(db,percentage=0.1,dbname=None, pcol=None,figname = None, yli
                     D[p].append(calc_gamma_diversity(samples_shuffled, q,bool(i)))
                 D[p].append(calc_gamma_diversity(samples,q,bool(i)))
             if i==0:
-                ax.plot(D.keys(),[x[-1] for x in D.values()],marker ="o",markersize= 20, label = "q={}".format(q),color=cols[q])
-                ax.errorbar(D.keys(),[np.mean(x[:-1]) for x in list(D.values())],[np.std(x[:-1]) for x in list(D.values())],marker ="^",markersize= 20,capsize=5,label = "q={} randomised".format(q),color=colran[q],linestyle ="--")
+                ax.plot(D.keys(),[x[-1] for x in D.values()],marker = shapes[q], markersize= 30, markerfacecolor = "white",
+                        label = "q={}".format(q),markeredgecolor=cols[q], color = cols[q])
+                ax.errorbar(D.keys(),[np.mean(x[:-1]) for x in list(D.values())],[np.std(x[:-1]) for x in list(D.values())],
+                            marker = shapes[q] , markersize= 20,capsize=8,label = "q={} randomised".format(q),color=colran[q],linestyle ="--")
             else:
-                ax.plot(D.keys(),[x[-1] for x in D.values()],marker ="o",markersize= 20,color=cols[q])
-                ax.errorbar(D.keys(),[np.mean(x[:-1]) for x in list(D.values())],[np.std(x[:-1]) for x in list(D.values())],marker ="^",markersize= 20,capsize=5,linestyle ="--", color=colran[q])
+                ax.plot(D.keys(),[x[-1] for x in D.values()],marker = shapes[q], markersize= 30, markerfacecolor = "white", 
+                        markeredgecolor=cols[q], color = cols[q])
+                ax.errorbar(D.keys(),[np.mean(x[:-1]) for x in list(D.values())],[np.std(x[:-1]) for x in list(D.values())],
+                            marker = shapes[q] ,markersize= 20,capsize=8,linestyle ="--", color=colran[q])
         i+=1
         ax.set_ylabel("$D^{\\gamma}_q$",fontsize=40)
         ax.set_ylim(0,ylimit)
