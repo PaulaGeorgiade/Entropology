@@ -50,6 +50,7 @@ def calc_gamma_diversity(samples, q, effective= True ):
             p = dict(Counter(s))
             for i,val in p.items():
                 probabilities[i]+=(val/len(s))
+        # print(probabilities)
         probabilities = {key:(val/len(samples))**q for key,val in probabilities.items() if val>0}
     else:
         for s in samples:
@@ -58,7 +59,7 @@ def calc_gamma_diversity(samples, q, effective= True ):
                 probabilities[i]+=val/N
         probabilities = {key:(val)**q for key,val in probabilities.items() if val>0}
     if q!=1:
-        return sum((probabilities.values()))**(1/(1-q))
+        return sum(list(probabilities.values()))**(1/(1-q))
     else:
         return np.exp(-sum(np.array(list(probabilities.values()))*np.log(np.array(list(probabilities.values()) ))))
    

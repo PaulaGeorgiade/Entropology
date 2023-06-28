@@ -12,9 +12,9 @@ def read_df (exclude_periods = ["LM", "LM III", "LM III A", "LM III B"], dbname 
     """
     This function loads the data file and plots a histogram of abundance of species
     """
-    period_map = {'LM': 'LM', "LM II" : "LM II", 'LM III': "LM III", 'LM III A': "LM III A", 'LM III A1':'LM III A1' ,
+    period_map = {'LM': 'LM', "LM II" : "LM II", 'LM III': "LM III", 'LM III A': "LM III A1", 'LM III A1':'LM III A1' ,
                   'LM III A1 Early': "LM III A1", 'LM III A2':'LM III A2' ,'LM III A2 Early':'LM III A2',
-                  'LM III A2 Late': 'LM III A2', 'LM III B': 'LM III B','LM III B1':'LM III B1', 'LM III B2':'LM III B2'}
+                  'LM III A2 Late': 'LM III A2', 'LM III B': 'LM III B1','LM III B1':'LM III B1', 'LM III B2':'LM III B2'}
     print("using ", dbname, pcol )
     db = pd.read_excel(f"{dbname}.xlsx")[["Deposition_Site","Vessel_Form", pcol]]
     for p in exclude_periods: 
@@ -175,9 +175,12 @@ def run_gamma_error(db,percentage=0.1,dbname=None, pcol=None,figname = None, yli
                         samples_shuffled.append(random_replacement(db, sample,percentage))
                     D[p].append(calc_gamma_diversity(samples_shuffled, q,bool(i)))
                 D[p].append(calc_gamma_diversity(samples,q,bool(i)))
+            if q == 0:
+                print(i,{key:val[-1] for key,val in D.items()})
             if i==0:
-                ax.plot(D.keys(),[x[-1] for x in D.values()],marker = shapes[q], markersize= 30, markerfacecolor = "white",
+                ax.plot(D.keys(),[x[-1] for x in D.values()], marker = shapes[q], markersize= 30, markerfacecolor = "white",
                         label = "q={}".format(q),markeredgecolor=cols[q], color = cols[q])
+                
                 ax.errorbar(D.keys(),[np.mean(x[:-1]) for x in list(D.values())],[np.std(x[:-1]) for x in list(D.values())],
                             marker = shapes[q] , markersize= 20,capsize=8,label = "q={} randomised".format(q),color=colran[q],linestyle ="--")
             else:
