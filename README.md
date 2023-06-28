@@ -15,16 +15,6 @@ The figures folder includes generated figures. The folder "Entropology_Dataset_F
 # References
 If you use this code, please cite
 <a href="https://zenodo.org/badge/latestdoi/650055499"><img src="https://zenodo.org/badge/650055499.svg" alt="DOI"></a>
-@article{gheorghiade2023code,
-  title={Code and extra data for Entropology: an information-theoretic approach to understanding archaeological data},
-  author={Gheorghiade, Paula and Vasiliauskaite, Vaiva},
-  year={2023}
-}
-And the relevant publication:
-@article{gheorghiade2023entropology,
-  title={Entropology: an information-theoretic approach to understanding archaeological data},
-  author={Gheorghiade, Paula and Vasiliauskaite, Vaiva and Diachenko, Aleksandr and Price, Henry and Evans, Tim and Rivers, Ray},
-  year={2023}
-}
+Link to the [paper](https://www.researchsquare.com/article/rs-2686626/v1) .
 
 
