@@ -8,5 +8,6 @@ authors:
     given-names: "Vaiva"
     orcid: "https://orcid.org/0000-0003-2039-6236"
 title: "Digital extras for Gheorghiade, P., Vasiliauskaite, V., Diachenko, A., Price, H., Evans, T., & Rivers, R. (2023). Entropology: an information-theoretic approach to understanding archaeological data. Journal of Archaeological Method and Theory."
-version: v1.2 
+version: v1.3
+doi: 10.5281/zenodo.8101056
 date-released: 2023-06-30
