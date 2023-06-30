@@ -13,8 +13,8 @@ figure_plotter.py - the main file for generating figures presented in the paper
 The figures folder includes generated figures. The folder "Entropology_Dataset_Flattened/Solo_Period" includes figures presented in the paper. In the subfolder "Solo_Period_Include_LMIIIA_LMIIIB" we present results where data from LM III A is included in LM III A1 and LM III B is included in LM III B1.  
 
 # References
-If you use this code, please cite latest version (1.2):
-<a href="https://doi.org/10.5281/zenodo.8046521"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.8046521.svg" alt="DOI"></a>
+If you use this code, please cite latest version (1.3):
+<a href="https://doi.org/10.5281/zenodo.8101056"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.8101056.svg" alt="DOI"></a>
 <br>
 <br>
 Link to the preprint of the [paper](https://www.researchsquare.com/article/rs-2686626/v1). 
