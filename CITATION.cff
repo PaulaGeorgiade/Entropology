@@ -1,11 +1,11 @@
 cff-version: 1.1.0
 message: "If you use this data, please cite it as below."
 authors:
-  - family-names: "Paula"
-    given-names: "Gheorghiade"
+  - family-names: "Gheorghiade"
+    given-names: "Paula"
     orcid: "https://orcid.org/0000-0003-2335-2036"
-  - family-names: "Vaiva"
-    given-names: "Vasiliauskaite"
+  - family-names: "Vasiliauskaite"
+    given-names: "Vaiva"
     orcid: "https://orcid.org/0000-0003-2039-6236"
 title: "PaulaGeorgiade/Entropology: Digital extras for Paula Gheorghiade, Vaiva Vasiliauskaite, Aleksandr Diachenko, Henry Price, Tim Evans, Ray Rivers (2023). Entropology: an information-theoretic approach to understanding archaeological data. Journal of Archaeological Method and Theory."
 version: v1.2
