@@ -20,8 +20,7 @@ If you use this code, please cite latest version (1.2):
 Link to the preprint of the [paper](https://www.researchsquare.com/article/rs-2686626/v1). 
 <br>
 <br>
-Version 1.1 can be found here:
-<a href="https://zenodo.org/badge/latestdoi/650055499"><img src="https://zenodo.org/badge/650055499.svg" alt="DOI"></a>
+
 
 
 
