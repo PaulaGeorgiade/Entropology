@@ -1,4 +1,4 @@
-from utilities import read_df, run_gamma_error , run_gamma 
+from utilities import read_df, run_gamma_error , run_gamma , run_beta
 from diversity_calculators import calc_similarity, calc_diversity
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,6 +8,10 @@ plt.rcParams.update({'font.size': 30, "font.family":"helvetica"})
 from matplotlib.offsetbox import AnchoredText
 from collections import defaultdict
 import networkx as nx
+import matplotlib as mpl
+from mycolorpy import colorlist as mcp
+from matplotlib.patches import Patch
+from matplotlib.lines import Line2D
 
 if __name__ == "__main__":
     
@@ -23,14 +27,17 @@ if __name__ == "__main__":
     db = read_df(exclude_periods = ["LM", "LM III", "LM III A", "LM III B"], dbname = dbname, pcol = pcol, map_periods = map_periods)
     
     
-    
+
+    colors = mcp.gen_color(cmap="viridis",n=5)
+    sites=  ["Chania", "Kommos", "Knossos", "Mochlos", "Palaikastro"]
+    site_colors= dict(zip( sites, colors))
     ###############
     # FIGURE 2 MAIN TEXT
     ###############
     h_site_tot = {}
     for site, group in db.groupby("Deposition_Site"):
         h_site_tot[site] = len(group)
-    color= {"Chania":"tab:blue","Knossos":"tab:orange","Kommos":"tab:green","Mochlos":"tab:red", "Palaikastro":"tab:purple"}
+    # color= {"Chania":"tab:blue","Knossos":"tab:orange","Kommos":"tab:green","Mochlos":"tab:red", "Palaikastro":"tab:purple"}
     h={}
     hatch_styles = {"Chania": "/","Kommos": "X", "Knossos": "+", "Mochlos": "\\", "Palaikastro": "."}
     for key,val in db.groupby("Vessel_Form"):
@@ -43,23 +50,27 @@ if __name__ == "__main__":
             arr.append(len(db[(db.Vessel_Form == key) & (db.Deposition_Site == site)]))
             h_site[site] = arr
     fig,ax = plt.subplots(1,1,figsize=(22,10))
+    ax.yaxis.grid(True,which='major')
     from mpl_toolkits.axes_grid1.inset_locator import inset_axes
     axi = inset_axes(ax, width = 4, height = 3)
+    # axi.set_ylim(0,1)
+    
+    axi.yaxis.grid(True,which='major')
     bottom_values = [0 for i in range(len(set(db.Vessel_Form)))]
     for site in ["Mochlos", "Palaikastro", "Knossos", "Kommos", "Chania" ]:
         ax.bar(list(h.keys()), h_site[site],bottom = bottom_values,width=0.7, 
-               alpha = 1, label = site, color = color[site],hatch = hatch_styles[site] +hatch_styles[site])
+               alpha = 1, label = site, color = site_colors[site])#,hatch = hatch_styles[site] +hatch_styles[site])
         bottom_values =np.add(bottom_values,  h_site[site])
     for site in ["Chania", "Kommos", "Knossos", "Palaikastro", "Mochlos" ]:
-        axi.bar(site, h_site_tot[site], color = color[site], hatch = hatch_styles[site])
+        axi.bar(site, h_site_tot[site], color = site_colors[site])#, hatch = hatch_styles[site])
     plt.xticks(rotation=90)
     ax.tick_params(axis = "y", length = 10, width=2  , which = "both")
     ax.tick_params(axis='x', labelrotation = 90)
-    ax.set_yscale('log')
-    axi.set_yscale("log")
-    axi.set_yticks([  100, 1000, 10000])
-    ax.set_yticks([ 1, 10, 100, 1000])
-    ax.set_ylim(0.5,3000)
+    ax.set_yscale('symlog')
+    axi.set_yscale("symlog")
+    axi.set_yticks([1, 10, 100, 1000, 10000])
+    ax.set_yticks([0, 1, 10, 100, 1000])
+    ax.set_ylim(0,3000)
     ax.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
     plt.tight_layout()
     plt.savefig(f"./figures/{dbname}/{pcol}/Fig2.eps")
@@ -72,11 +83,22 @@ if __name__ == "__main__":
     ##############
     # Gamma diversity with errorbars (FIGURE 5, FIGURE 3(b) MAIN TEXT) 
     ##############
-    run_gamma_error(db,0.1,dbname =dbname, pcol= pcol, figname= "Fig5", ylimit = 45) # 
+    run_gamma_error(db,0.1,dbname =dbname, pcol= pcol, figname= "Fig5", ylimit = 45, cmapname ="viridis") # 
     run_gamma(db,dbname =dbname, pcol= pcol,figname= "Fig3")
     
     sites =sorted(list(set(db.Deposition_Site)))
     periods= sorted(list(set(db[pcol])))
+    
+    
+    
+    ###################
+    # Beta diversity
+    ###################
+    run_beta(db,dbname =dbname, pcol= pcol)
+    
+
+    
+
     
     ##############
     # Inter-period similarity (TABLE 2 MAIN TEXT)
@@ -194,30 +216,34 @@ if __name__ == "__main__":
     # Size vs diversity (FIGURE 4 MAIN TEXT)
     ###################
     fig,ax = plt.subplots(1,1,figsize=(15,8))
-    i =0
+    ax.xaxis.grid(True,which='major')
+    ax.yaxis.grid(True,which='major')
+    ax.set_yticks(np.linspace(0,20, 11))
     q=1
-    c=0
-    markers = ["o","^","*","s","v"]
+    markers = ["o","^","s","v", "*"]
+    period_markers = dict(zip(sorted(list(set(db.Solo_Period))),markers))
+    legend_elements = [Patch(facecolor=site_colors[site],edgecolor = site_colors[site],label= site) for site in sites] + [Line2D([0], [0], marker=period_markers[period], color='w', label=period, markerfacecolor='w',markeredgecolor="k", markersize=15) for period in period_markers.keys()]
     site_diversity_vs_size = []
-    for site,df in db.groupby("Deposition_Site"):
+    for site in sites:
+        df =db[db.Deposition_Site == site]
         y = []
         x = []
         print(site)
         for date, X in df.groupby(pcol):
-                print(date,end =",")
-                c+=1
-                y.append(calc_diversity(X.Vessel_Form,q))
-                x.append(len(X))
-        ax.plot(x,y,label = site,linestyle = "",marker = markers[i],markersize =20,linewidth = 5 )
-        i+=1
+            print(date,end =",")
+            y.append(calc_diversity(X.Vessel_Form,q))
+            x.append(len(X))
+            ax.scatter(len(X), calc_diversity(X.Vessel_Form,q), marker = period_markers[date], s= 300,color = site_colors[site])
+        # ax.plot(x,y,label = site,linestyle = "",marker = markers[i],markersize =20 ,color = site_colors[site])
+        # i+=1
     plt.xlabel("$N$")
     plt.ylabel("$D_1$", fontsize=40)
     ax.set_xscale("symlog")
     ax.set_xticks([1, 10, 100, 1000])
     ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
-    ax.set_ylim(-0.1,20)
+    ax.set_ylim(0,20)
     ax.set_xlim(0,3000)
-    ax.legend(loc='center left',fancybox=False,bbox_to_anchor=(1, 0.5), shadow=False,ncol=1)
+    ax.legend(handles = legend_elements, loc='center left',fancybox=False,bbox_to_anchor=(1, 0.5), shadow=False,ncol=1)
     plt.tight_layout()
     plt.savefig(f"./figures/{dbname}/{pcol}/Fig4.eps")
     plt.savefig(f"./figures/{dbname}/{pcol}/Fig4.pdf")
@@ -230,6 +256,8 @@ if __name__ == "__main__":
     # Similarity within period (FIGURE 6 MAIN TEXT)
     ###################
     fig,ax = plt.subplots(1,2,figsize =(22,9))
+    ax[1].yaxis.grid(True,which='major')
+    ax[0].yaxis.grid(True,which='major')
     for q in [0,2]:
         if q==0 : i = 1 
         else :i = 0
@@ -238,13 +266,11 @@ if __name__ == "__main__":
         if q == 0: 
             at = AnchoredText(
                 "(b)", prop=dict(size=35), frameon=False, loc='upper left')
-            # at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
             ax[i].add_artist(at)
         else:
             
             at = AnchoredText(
                 "(a)", prop=dict(size=35), frameon=False, loc='upper left')
-            # at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
             ax[i].add_artist(at)
           
           
@@ -273,13 +299,16 @@ if __name__ == "__main__":
                 site_sim_in_period[s1].append(np.mean(val))
                 
         markers = ["o","^","*","s","v"]
+        markers = ["o","o","o","o","o"]
         for key,val in site_sim_in_period.items():
             if i ==0:
-                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=30,label=key ,markerfacecolor = "white", markeredgewidth =3)
+                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=30,label=key ,markerfacecolor = site_colors[key], markeredgewidth =3,color = site_colors[key])
                 
             else:
-                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=30,markerfacecolor = "white",markeredgewidth =3)
+                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=30,markerfacecolor =site_colors[key],markeredgewidth =3,color = site_colors[key])
         ax[i].set_ylim(-0.1,1)
+        ax[i].set_yticks(np.linspace(0,1, 11))
+        ax[i].set_yticklabels(np.round(np.linspace(0,1, 11),1))
         if q==1:
             ax[i].set_ylabel("$\\langle S_1(A,B)\\rangle_B$", fontsize = 35)
         if q==2:
@@ -293,6 +322,8 @@ if __name__ == "__main__":
         plt.savefig(f"./figures/{dbname}/{pcol}/Fig6.svg", bbox_inches = "tight")
         plt.savefig(f"./figures/{dbname}/{pcol}/Fig6.png", bbox_inches = "tight")
         
+
+
 
     ###################
     # Shuffled diversity vs observed

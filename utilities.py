@@ -5,6 +5,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 from matplotlib.offsetbox import AnchoredText
+from mycolorpy import colorlist as mcp
+
+from matplotlib.patches import Patch
+from matplotlib.lines import Line2D
 from diversity_calculators import calc_diversity , calc_gamma_diversity , calc_alpha_diversity , calc_beta_diversity
 plt.rcParams.update({'font.size': 30, "font.family":"helvetica"})
     
@@ -59,14 +63,15 @@ def run_beta(db, dbname, pcol):
         D_beta_eff= {}
         for p in sorted(set(db[pcol])):
             samples = [list(group["Vessel_Form"]) for site,group in db[db[pcol] ==p].groupby("Deposition_Site")]
-            D_beta_land[p]=calc_beta_diversity(samples, q,False)
-            D_beta_eff[p]=calc_beta_diversity(samples, q,True)
+            D_beta_land[p]=calc_beta_diversity(samples, q,False)#/len(samples)
+            D_beta_eff[p]=calc_beta_diversity(samples, q,True)#/len(samples)
+        print(D_beta_eff)
         fig,ax = plt.subplots(1,1,figsize=(12,10))
         ax.plot(D_beta_land.keys(),D_beta_land.values(),marker ="o",markersize= 20,color="black", label = "Landscape")
         ax.plot(D_beta_eff.keys(),D_beta_eff.values(),marker ="s",markersize= 20,color="red", label = "Effective")
         ax.tick_params(axis="x",rotation = 90)
         ax.title.set_text("$^{}D_\\beta$".format(str(q)))  
-        ax.set_ylim(0,5)
+        ax.set_ylim(0,1)
         plt.legend(loc=1)
         plt.tight_layout()
         plt.savefig(f"./figures/{dbname}/{pcol}/beta_diversity_landscape_and_effective_q_{q}.pdf")
@@ -146,7 +151,7 @@ def random_replacement(db, sample, percentage, uniform = False):
     sample_copy += random.sample(all_artefacts,num_to_replace)
     return sample_copy
     
-def run_gamma_error(db,percentage=0.1,dbname=None, pcol=None,figname = None, ylimit = 45):
+def run_gamma_error(db,percentage=0.1,dbname=None, pcol=None,figname = None, ylimit = 45,cmapname= "viridis"):
     """
     Plotting function to visualise Gamma diversity with errorbars
     """
@@ -161,9 +166,16 @@ def run_gamma_error(db,percentage=0.1,dbname=None, pcol=None,figname = None, yli
             at = AnchoredText(
                 "(b)", prop=dict(size=35), frameon=False, loc='upper left')
             ax.add_artist(at)
-        cols = {2:"#a62802",1: "#46a303",0.5:"#0266a1",0: "#b88702"}
-        colran = {2:"#f73a00",1: "#5ede02", 0.5: "#03a1fc", 0:"#f5b402"}
+        ax.yaxis.grid(True,which='major')
+        # cols = {2:"#a62802",1: "#46a303",0.5:"#0266a1",0: "#b88702"}
+        # colran = {2:"#f73a00",1: "#5ede02", 0.5: "#03a1fc", 0:"#f5b402"}
+        
+        colors = mcp.gen_color(cmap=cmapname,n=4)
+        cols = dict(zip([0,0.5,1,2],colors))
         shapes = { 2: "s", 1: "^", 0.5: "o", 0: "D" }
+        shapes = { 2: "o", 1: "o", 0.5: "o", 0: "o" }
+        legend_elements = [Patch(facecolor=cols[q],edgecolor = cols[q],label= f"$q={q}$") for q in cols.keys()] + [Line2D([0], [0], marker="o", color='w', label="observed", markerfacecolor='w',markeredgecolor="k", markersize=20),
+                                                                                                                   Line2D([0], [0], marker="o", color='w', label="randomised", markerfacecolor='k',markeredgecolor="k", markersize=20) ]
         # linestyles = {2:"solid" , 1:"dotted" , 0.5: "dashed" , 0: "dashdot"}
         for q in [0,0.5,1,2]:
             D=defaultdict(list)
@@ -178,20 +190,20 @@ def run_gamma_error(db,percentage=0.1,dbname=None, pcol=None,figname = None, yli
             if q == 0:
                 print(i,{key:val[-1] for key,val in D.items()})
             if i==0:
-                ax.plot(D.keys(),[x[-1] for x in D.values()], marker = shapes[q], markersize= 30, markerfacecolor = "white",
+                ax.plot(D.keys(),[x[-1] for x in D.values()], marker = shapes[q], markersize= 15, markerfacecolor = "white",
                         label = "q={}".format(q),markeredgecolor=cols[q], color = cols[q])
                 
                 ax.errorbar(D.keys(),[np.mean(x[:-1]) for x in list(D.values())],[np.std(x[:-1]) for x in list(D.values())],
-                            marker = shapes[q] , markersize= 20,capsize=8,label = "q={} randomised".format(q),color=colran[q],linestyle ="--")
+                            marker = shapes[q] , markersize= 10,capsize=12,label = "q={} randomised".format(q),color=cols[q],linestyle ="--")
             else:
-                ax.plot(D.keys(),[x[-1] for x in D.values()],marker = shapes[q], markersize= 30, markerfacecolor = "white", 
+                ax.plot(D.keys(),[x[-1] for x in D.values()],marker = shapes[q], markersize= 15, markerfacecolor = "white", 
                         markeredgecolor=cols[q], color = cols[q])
                 ax.errorbar(D.keys(),[np.mean(x[:-1]) for x in list(D.values())],[np.std(x[:-1]) for x in list(D.values())],
-                            marker = shapes[q] ,markersize= 20,capsize=8,linestyle ="--", color=colran[q])
+                            marker = shapes[q] ,markersize= 10,capsize=12,linestyle ="--", color=cols[q])
         i+=1
         ax.set_ylabel("$D^{\\gamma}_q$",fontsize=40)
         ax.set_ylim(0,ylimit)
-    fig.legend(loc='upper center',fancybox=False,bbox_to_anchor=(0.5, 0), shadow=False,ncol=4)
+    fig.legend( handles = legend_elements,loc='upper center',fancybox=False,bbox_to_anchor=(0.5, 0), shadow=False,ncol=3)
     plt.tight_layout()
     plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.pdf", bbox_inches = "tight")
     plt.savefig(f"./figures/{dbname}/{pcol}/{figname}.svg", bbox_inches = "tight")

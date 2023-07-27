@@ -11,11 +11,13 @@ import pandas as pd
 import os
 
 
-output_directory = r"D:\DATA\artefact\output"
+output_directory = r"figures/Entropology_Dataset_Flattened/Solo_Period"
 
 
-plt.rcParams["figure.figsize"] = (6,6)
+# plt.rcParams["figure.figsize"] = (6,6)
 
+col_eff= "#fde725"
+col_land = "#440154"
 data = [4.053236001,np.nan,np.nan,7.319310267,6.814215858,8.238599677,5.924414781,5.320974069,5.488835819,4.053251907]
 xs = np.arange(1, len(data) +1 )
 s1 = np.array(data).astype(np.double)
@@ -25,7 +27,7 @@ s1mask = np.isfinite(s1)
 print(s1mask)
 
 ax = plt.subplot(111)
-plt.plot(xs[s1mask], s1[s1mask], linestyle='-', marker='o')
+plt.plot(xs[s1mask], s1[s1mask], linestyle='-', marker='o', color = col_land)
 
 
 plt.xticks(xs)
@@ -118,10 +120,13 @@ font = {'family':'helvetica','color':'black',"size": 13}
 font1 = {'family':'helvetica','color':'black'}
 plt.rcParams['axes.titley'] = 1.0 
 plt.rcParams['axes.titlepad'] = -16 
-ax1.plot(data["Period"], data["Effective Aggregation"], linestyle='-.', marker='^',color= "crimson", label = "Effective Aggregation")
-ax1.plot(data["Period"], data["Landscape Aggregation"], linestyle='-', marker='o', color="#1f77b4", label = "Landscape Aggregation")
-ax0.plot(xs[s1mask][1:], s1[s1mask][1:], linestyle='-', marker='o',color= '#1f77b4')
-ax0.plot(xs[s1mask][0:2], s1[s1mask][0:2], linestyle='-.',  marker='o',color= '#1f77b4')
+ax1.plot(data["Period"], data["Effective Aggregation"], linestyle='-.', marker='o',color= "#440154", label = "Effective Aggregation", markersize =7)
+ax1.plot(data["Period"], data["Landscape Aggregation"], linestyle='-', marker='o', color="#fde725", label = "Landscape Aggregation", markersize =7)
+ax0.plot(xs[s1mask][1:], s1[s1mask][1:], linestyle='-', marker='o',color= '#440154', markersize =7)
+ax0.plot(xs[s1mask][0:2], s1[s1mask][0:2], linestyle='-.',  marker='o',color= '#440154', markersize =7)
+
+ax0.yaxis.grid(True,which='major')
+ax1.yaxis.grid(True,which='major')
 
 ax0.set_title("   (a)", fontdict = font1, loc='left')
 ax1.set_title("   (b)", fontdict = font1, loc='left')
