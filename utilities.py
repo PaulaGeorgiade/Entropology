@@ -16,9 +16,13 @@ def read_df (exclude_periods = ["LM", "LM III", "LM III A", "LM III B"], dbname 
     """
     This function loads the data file and plots a histogram of abundance of species
     """
-    period_map = {'LM': 'LM', "LM II" : "LM II", 'LM III': "LM III", 'LM III A': "LM III A1", 'LM III A1':'LM III A1' ,
-                  'LM III A1 Early': "LM III A1", 'LM III A2':'LM III A2' ,'LM III A2 Early':'LM III A2',
-                  'LM III A2 Late': 'LM III A2', 'LM III B': 'LM III B1','LM III B1':'LM III B1', 'LM III B2':'LM III B2'}
+    # period_map = {'LM': 'LM', "LM II" : "LM II", 'LM III': "LM III", 'LM III A': "LM III A1", 'LM III A1':'LM III A1' ,
+    #               'LM III A1 Early': "LM III A1", 'LM III A2':'LM III A2' ,'LM III A2 Early':'LM III A2',
+    #               'LM III A2 Late': 'LM III A2', 'LM III B': 'LM III B1','LM III B1':'LM III B1', 'LM III B2':'LM III B2'}
+    period_map = {'LM': 'LM', "LM II" : "LM II", 'LM III': "LM III", 'LM III A': "LM IIIA1", 'LM III A1':'LM IIIA1' ,
+                  'LM III A1 Early': "LM IIIA1", 'LM III A2':'LM IIIA2' ,'LM III A2 Early':'LM IIIA2',
+                  'LM III A2 Late': 'LM IIIA2', 'LM III B': 'LM IIIB1','LM III B1':'LM IIIB1', 'LM III B2':'LM IIIB2'}
+    
     print("using ", dbname, pcol )
     db = pd.read_excel(f"{dbname}.xlsx")[["Deposition_Site","Vessel_Form", pcol]]
     for p in exclude_periods: 

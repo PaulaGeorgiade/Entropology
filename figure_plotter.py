@@ -138,79 +138,7 @@ if __name__ == "__main__":
             print(round(np.mean(res),2)," ",round(np.std(res),2),  end=",")
             graph_list.append([q, p1, p2, np.mean(res)])
         print('')
-    ###################
-    # Table replacement
-    ###################
-    # graph_list =[[0, 'LM II', 'LM III A1', 0.36850323937820184],
-    #  [0.5, 'LM II', 'LM III A1', 0.5169973358901473],
-    #  [1, 'LM II', 'LM III A1', 0.6350543067014085],
-    #  [2, 'LM II', 'LM III A1', 0.724621225495097],
-    #  [0, 'LM III A1', 'LM III A2', 0.45574130461363005],
-    #  [0.5, 'LM III A1', 'LM III A2', 0.5829699755694543],
-    #  [1, 'LM III A1', 'LM III A2', 0.6728201724055703],
-    #  [2, 'LM III A1', 'LM III A2', 0.7267556766980137],
-    #  [0, 'LM III A2', 'LM III B1', 0.2159211219447572],
-    #  [0.5, 'LM III A2', 'LM III B1', 0.3182786126849091],
-    #  [1, 'LM III A2', 'LM III B1', 0.41304593443751564],
-    #  [2, 'LM III A2', 'LM III B1', 0.45089638901740403],
-    #  [0, 'LM III B1', 'LM III B2', 0.059867024587612824],
-    #  [0.5, 'LM III B1', 'LM III B2', 0.09993757112406364],
-    #  [1, 'LM III B1', 'LM III B2', 0.13627016466505842],
-    #  [2, 'LM III B1', 'LM III B2', 0.14712327905128134]]
-
-
-    vnames = list(set(db[pcol]))#['LM II' , 'LM III A1' , 'LM III A2', 'LM III B1', 'LM III B2']
-    q_color = {0: "tab:blue", 0.5: "tab:orange", 1: "tab:purple", 2:"tab:red" }
-    options = {"edgecolors": "tab:gray", "node_size": 800, "alpha": 1}
     
-    if dbname == "STANDARD_DATES_SettlementTomb_new2022" :
-        pos = {'LM II':  np.array([-1,-1]) , 
-         'LM IIIA': np.array([-1/3,-1/3]) , 
-         'LM IIIB': np.array([1/3, 1/3]),
-         'LM IIIC': np.array([1,1])}
-        
-    else: # dbname == "NoEarlyDates_WorkingDB_Modelled":
-        pos = {'LM II':  np.array([-1,-1]) , 
-         'LM III A1': np.array([-0.5,-0.5]) , 
-         'LM III A2': np.array([0, 0]),
-         'LM III B1': np.array([0.5, 0.5]),
-         'LM III B2': np.array([1,1])}
-
-    fig,ax = plt.subplots(1,4,figsize =(19,5))
-    i = 0
-    for q in [0,0.5,1,2]:
-        g = nx.Graph()
-        widths = []
-        for item in graph_list: 
-            if item[0] == q:    
-                g.add_edge(item[1] , item[2], weight = item[-1])
-                widths.append( item[-1] * 10/0.724621225495097)
-                
-        nx.draw_networkx_nodes(g, pos, nodelist=vnames, node_color=q_color[q], ax = ax[i], **options)
-        nx.draw_networkx_edges(g,pos, width=widths , alpha=0.5, edge_color=q_color[q],ax = ax[i] )
-        nx.draw_networkx_labels(g, pos=pos,ax = ax[i],
-                                labels=dict(zip(vnames,vnames)),
-                                font_color='black',font_size=20)
-        # ax[i].box(False)
-
-        at = AnchoredText(
-            f"q={q}", prop=dict(size=20), frameon=False, loc='upper left')
-        # at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
-        ax[i].add_artist(at)
-        ax[i].spines['top'].set_visible(False)
-        ax[i].spines['right'].set_visible(False)
-        ax[i].spines['bottom'].set_visible(False)
-        ax[i].spines['left'].set_visible(False)
-        ax[i].set_ylim(-1.4,1.4)
-        ax[i].set_xlim(-1.4,1.4)
-        i +=1
-    plt.tight_layout()
-    plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.svg")
-    plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.pdf")
-    plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.eps")
-    plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.png")
-    plt.show()
-            
             
     ###################
     # Size vs diversity (FIGURE 4 MAIN TEXT)
@@ -302,10 +230,10 @@ if __name__ == "__main__":
         markers = ["o","o","o","o","o"]
         for key,val in site_sim_in_period.items():
             if i ==0:
-                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=30,label=key ,markerfacecolor = site_colors[key], markeredgewidth =3,color = site_colors[key])
+                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=15,label=key ,markerfacecolor = site_colors[key], markeredgewidth =3,color = site_colors[key])
                 
             else:
-                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=30,markerfacecolor =site_colors[key],markeredgewidth =3,color = site_colors[key])
+                ax[i].plot(periods,val,linestyle ="-", marker= markers.pop(),markersize=15,markerfacecolor =site_colors[key],markeredgewidth =3,color = site_colors[key])
         ax[i].set_ylim(-0.1,1)
         ax[i].set_yticks(np.linspace(0,1, 11))
         ax[i].set_yticklabels(np.round(np.linspace(0,1, 11),1))
@@ -438,5 +366,77 @@ if __name__ == "__main__":
     
     
     
+    ###################
+    # Table replacement
+    ###################
+    # graph_list =[[0, 'LM II', 'LM III A1', 0.36850323937820184],
+    #  [0.5, 'LM II', 'LM III A1', 0.5169973358901473],
+    #  [1, 'LM II', 'LM III A1', 0.6350543067014085],
+    #  [2, 'LM II', 'LM III A1', 0.724621225495097],
+    #  [0, 'LM III A1', 'LM III A2', 0.45574130461363005],
+    #  [0.5, 'LM III A1', 'LM III A2', 0.5829699755694543],
+    #  [1, 'LM III A1', 'LM III A2', 0.6728201724055703],
+    #  [2, 'LM III A1', 'LM III A2', 0.7267556766980137],
+    #  [0, 'LM III A2', 'LM III B1', 0.2159211219447572],
+    #  [0.5, 'LM III A2', 'LM III B1', 0.3182786126849091],
+    #  [1, 'LM III A2', 'LM III B1', 0.41304593443751564],
+    #  [2, 'LM III A2', 'LM III B1', 0.45089638901740403],
+    #  [0, 'LM III B1', 'LM III B2', 0.059867024587612824],
+    #  [0.5, 'LM III B1', 'LM III B2', 0.09993757112406364],
+    #  [1, 'LM III B1', 'LM III B2', 0.13627016466505842],
+    #  [2, 'LM III B1', 'LM III B2', 0.14712327905128134]]
+
+
+    # vnames = list(set(db[pcol]))#['LM II' , 'LM III A1' , 'LM III A2', 'LM III B1', 'LM III B2']
+    # q_color = {0: "tab:blue", 0.5: "tab:orange", 1: "tab:purple", 2:"tab:red" }
+    # options = {"edgecolors": "tab:gray", "node_size": 800, "alpha": 1}
     
+    # if dbname == "STANDARD_DATES_SettlementTomb_new2022" :
+    #     pos = {'LM II':  np.array([-1,-1]) , 
+    #      'LM IIIA': np.array([-1/3,-1/3]) , 
+    #      'LM IIIB': np.array([1/3, 1/3]),
+    #      'LM IIIC': np.array([1,1])}
+        
+    # else: # dbname == "NoEarlyDates_WorkingDB_Modelled":
+    #     pos = {'LM II':  np.array([-1,-1]) , 
+    #      'LM III A1': np.array([-0.5,-0.5]) , 
+    #      'LM III A2': np.array([0, 0]),
+    #      'LM III B1': np.array([0.5, 0.5]),
+    #      'LM III B2': np.array([1,1])}
+
+    # fig,ax = plt.subplots(1,4,figsize =(19,5))
+    # i = 0
+    # for q in [0,0.5,1,2]:
+    #     g = nx.Graph()
+    #     widths = []
+    #     for item in graph_list: 
+    #         if item[0] == q:    
+    #             g.add_edge(item[1] , item[2], weight = item[-1])
+    #             widths.append( item[-1] * 10/0.724621225495097)
+                
+    #     nx.draw_networkx_nodes(g, pos, nodelist=vnames, node_color=q_color[q], ax = ax[i], **options)
+    #     nx.draw_networkx_edges(g,pos, width=widths , alpha=0.5, edge_color=q_color[q],ax = ax[i] )
+    #     nx.draw_networkx_labels(g, pos=pos,ax = ax[i],
+    #                             labels=dict(zip(vnames,vnames)),
+    #                             font_color='black',font_size=20)
+    #     # ax[i].box(False)
+
+    #     at = AnchoredText(
+    #         f"q={q}", prop=dict(size=20), frameon=False, loc='upper left')
+    #     # at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
+    #     ax[i].add_artist(at)
+    #     ax[i].spines['top'].set_visible(False)
+    #     ax[i].spines['right'].set_visible(False)
+    #     ax[i].spines['bottom'].set_visible(False)
+    #     ax[i].spines['left'].set_visible(False)
+    #     ax[i].set_ylim(-1.4,1.4)
+    #     ax[i].set_xlim(-1.4,1.4)
+    #     i +=1
+    # plt.tight_layout()
+    # plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.svg")
+    # plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.pdf")
+    # plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.eps")
+    # plt.savefig(f"./figures/{dbname}/{pcol}/inter_period_similarity.png")
+    # plt.show()
+            
             

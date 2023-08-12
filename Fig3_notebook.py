@@ -63,8 +63,8 @@ plt.show()
 # effective_aggregation= {'LM II': 8.278410883904517, 'LM III A1': 12.790514690646805, 'LM III A2': 10.584934829964554, 'LM III B1': 6.30873351413355, 'LM III B2': 4.202394007290234}
 # landscape_aggregation = {'LM II': 10.510587378081292, 'LM III A1': 13.679987996543773, 'LM III A2': 10.279571400225047, 'LM III B1': 10.93223256170765, 'LM III B2': 7.342897951985194}
 
-effective_aggregation = {'LM II': 8.27841088390452, 'LM III A1': 9.857139161788577, 'LM III A2': 10.584934829964551, 'LM III B1': 6.308733514133549, 'LM III B2': 4.202394007290237}
-landscape_aggregation =  {'LM II': 10.510587378081286, 'LM III A1': 10.638897763177958, 'LM III A2': 10.279571400225047, 'LM III B1': 10.932232561707654, 'LM III B2': 7.342897951985197}
+effective_aggregation = {'LM II': 8.27841088390452, 'LM IIIA1': 9.857139161788577, 'LM IIIA2': 10.584934829964551, 'LM III B1': 6.308733514133549, 'LM IIIB2': 4.202394007290237}
+landscape_aggregation =  {'LM II': 10.510587378081286, 'LM IIIA1': 10.638897763177958, 'LM IIIA2': 10.279571400225047, 'LM III B1': 10.932232561707654, 'LM IIIB2': 7.342897951985197}
 
 
 plt.rcParams["figure.figsize"] = (6,6)
@@ -81,7 +81,7 @@ ax = plt.subplot(111)
 # ax.plot(D.keys(),D.values(),marker ="^",markersize= 10, linestyle = "--",color= "crimson")
 # plt.plot(s1, linestyle='--', marker='o',color= "crimson")
 plt.plot(data["Period"], data["Effective Aggregation"], linestyle='-.', marker='^',color= "crimson", label = "Effective Aggregation")
-plt.plot(data["Period"], data["Landscape Aggregation"], linestyle='-', marker='o', label = "Landscape Aggregation")
+plt.plot(data["Period"], data["Landscape Aggregation"], linestyle='-', marker='o', label = "Census Aggregation")
 
 
 plt.ylabel("Diversity",fontsize= 12 ) #rename if using different q
@@ -121,7 +121,7 @@ font1 = {'family':'helvetica','color':'black'}
 plt.rcParams['axes.titley'] = 1.0 
 plt.rcParams['axes.titlepad'] = -16 
 ax1.plot(data["Period"], data["Effective Aggregation"], linestyle='-.', marker='o',color= "#440154", label = "Effective Aggregation", markersize =7)
-ax1.plot(data["Period"], data["Landscape Aggregation"], linestyle='-', marker='o', color="#fde725", label = "Landscape Aggregation", markersize =7)
+ax1.plot(data["Period"], data["Landscape Aggregation"], linestyle='-', marker='o', color="#fde725", label = "Census Aggregation", markersize =7)
 ax0.plot(xs[s1mask][1:], s1[s1mask][1:], linestyle='-', marker='o',color= '#440154', markersize =7)
 ax0.plot(xs[s1mask][0:2], s1[s1mask][0:2], linestyle='-.',  marker='o',color= '#440154', markersize =7)
 
