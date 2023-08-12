@@ -28,7 +28,7 @@ from mycolorpy import colorlist as mcp
 # Rotate horizontal axis labels and alter font size appropriately
 
 # directory for output
-output_directory= "\\figures\Entropology_Dataset_Flattened\Solo_Period" #r'D:\DATA\Artefact\output'
+output_directory= os.getcwd() + "//figures/Entropology_Dataset_Flattened/Solo_Period" #r'D:\DATA\Artefact\output'
 
 # USe to form names of ouput files
 rootname="Fig7"
@@ -133,5 +133,5 @@ ax.legend(loc='upper left',fontsize=18)
 #fig.suptitle('Categorical Plotting')
 
 #input_directory=r'..\input'
-filenameroot=os.path.join(output_directory, rootname)
-saveFigure(plt,rootname,extlist=['pdf','svg','jpg'])
+filenameroot=os.path.join( output_directory, rootname)
+saveFigure(plt,filenameroot,extlist=['pdf','svg','jpg'])
