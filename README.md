@@ -13,8 +13,11 @@ utilities.py - utility functions for opening and pre-processing the data (read_d
 The figures folder includes generated figures. The folder "Entropology_Dataset_Flattened/Solo_Period" includes figures presented in the paper. In the subfolder "Solo_Period_Include_LMIIIA_LMIIIB" we present results where data from LM III A is included in LM IIIA1 and LM III B is included in LM IIIB1.  
 
 All figures were generated using the following scripts:
+
 fig3_notebook.py - to plot figure 3 of the paper
+
 entropologyTable2.py - to plot figure 7 of the paper
+
 figure_plotter.py - the main file for generating the rest of the figures presented in the paper
 
 # References
