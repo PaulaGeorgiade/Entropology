@@ -22,6 +22,7 @@ import os
 import matplotlib.pyplot as plt
 from mycolorpy import colorlist as mcp
 #import matplotlib.transforms as transforms
+plt.rcParams.update({'font.size': 30, "font.family":"helvetica"})
 
 ### USER data and alterable parameters
 
@@ -134,4 +135,4 @@ ax.legend(loc='upper left',fontsize=18)
 
 #input_directory=r'..\input'
 filenameroot=os.path.join( output_directory, rootname)
-saveFigure(plt,filenameroot,extlist=['pdf','svg','jpg'])
+saveFigure(plt,filenameroot,extlist=['pdf','svg','jpg', 'eps'])
